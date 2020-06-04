@@ -1,8 +1,8 @@
 
 # OpenShift plugins
-openshift-login:1.0.22
+openshift-login:1.0.23
 openshift-client:1.0.32
-openshift-sync:1.0.44
+openshift-sync:1.0.45
 
 
 # fabric8 openshift sync
