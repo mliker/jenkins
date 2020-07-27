@@ -51,11 +51,11 @@ COPY ./contrib/jenkins /usr/local/bin
 ADD ./contrib/s2i /usr/libexec/s2i
 ADD release.version /tmp/release.version
 
-#RUN /usr/local/bin/install-plugins.sh /opt/openshift/base-plugins.txt && \
+RUN /usr/local/bin/install-plugins.sh /opt/openshift/base-plugins.txt && \
     # need to create <plugin>.pinned files when upgrading "core" plugins like credentials or subversion that are bundled with the jenkins server
     # Currently jenkins v2 does not embed any plugins, but for reference:
     # touch /opt/openshift/plugins/credentials.jpi.pinned && \
-RUN rmdir /var/log/jenkins && \
+    rmdir /var/log/jenkins && \
     chmod -R 775 /etc/alternatives && \
     chmod -R 775 /var/lib/alternatives && \
     chmod -R 775 /usr/lib/jvm && \
