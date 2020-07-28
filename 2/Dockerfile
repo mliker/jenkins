@@ -1,6 +1,7 @@
 FROM quay.io/openshift/origin-cli:v3.11
 
 ARG JENKINS_PACKAGE=jenkins-2.235.2-1.1
+ARG INSTALL_PLUGINS=false
 
 # Jenkins image for OpenShift
 #
@@ -34,7 +35,7 @@ LABEL k8s.io.description="Jenkins is a continuous integration server" \
 EXPOSE 8080 50000
 
 RUN curl https://pkg.jenkins.io/redhat-stable/jenkins.repo -o /etc/yum.repos.d/jenkins.repo && \
-    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins-ci.org.key && \
+    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key && \
     yum install -y centos-release-scl-rh epel-release && \
     curl https://copr.fedorainfracloud.org/coprs/alsadi/dumb-init/repo/epel-7/alsadi-dumb-init-epel-7.repo -o /etc/yum.repos.d/alsadi-dumb-init-epel-7.repo && \
     #run yum update to avoid package version mismatch between i686 and other archs
@@ -51,11 +52,11 @@ COPY ./contrib/jenkins /usr/local/bin
 ADD ./contrib/s2i /usr/libexec/s2i
 ADD release.version /tmp/release.version
 
-RUN /usr/local/bin/install-plugins.sh /opt/openshift/base-plugins.txt && \
+RUN if [ "${INSTALL_PLUGINS}" == "true" ]; then /usr/local/bin/install-plugins.sh /opt/openshift/base-plugins.txt; fi
     # need to create <plugin>.pinned files when upgrading "core" plugins like credentials or subversion that are bundled with the jenkins server
     # Currently jenkins v2 does not embed any plugins, but for reference:
     # touch /opt/openshift/plugins/credentials.jpi.pinned && \
-    rmdir /var/log/jenkins && \
+RUN rmdir /var/log/jenkins && \
     chmod -R 775 /etc/alternatives && \
     chmod -R 775 /var/lib/alternatives && \
     chmod -R 775 /usr/lib/jvm && \
