@@ -36,15 +36,14 @@ EXPOSE 8080 50000
 
 RUN curl https://pkg.jenkins.io/redhat-stable/jenkins.repo -o /etc/yum.repos.d/jenkins.repo && \
     rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key && \
-    yum install -y centos-release-scl-rh epel-release && \
+    yum install -y epel-release && \
     curl https://copr.fedorainfracloud.org/coprs/alsadi/dumb-init/repo/epel-7/alsadi-dumb-init-epel-7.repo -o /etc/yum.repos.d/alsadi-dumb-init-epel-7.repo && \
     #run yum update to avoid package version mismatch between i686 and other archs
     yum -y update && \
-    x86_EXTRA_RPMS=$(if [ "$(uname -m)" == "x86_64" ]; then echo -n java-11-openjdk.i686 java-11-openjdk-devel.i686 ; fi) && \
-    INSTALL_PKGS="dejavu-sans-fonts rsync gettext git tar zip unzip openssl bzip2 dumb-init java-11-openjdk java-11-openjdk-devel $JENKINS_PACKAGE nss_wrapper" && \
-    yum -y --setopt=protected_multilib=false --setopt=tsflags=nodocs install $INSTALL_PKGS $x86_EXTRA_RPMS && \
-    rpm -V  $INSTALL_PKGS $x86_EXTRA_RPMS && \
-    yum clean all  && \
+    INSTALL_PKGS="dejavu-sans-fonts rsync gettext git tar zip unzip openssl bzip2 dumb-init java-11-openjdk java-11-openjdk-devel nss_wrapper" && \
+    yum -y --setopt=protected_multilib=false --setopt=tsflags=nodocs install $INSTALL_PKGS $JENKINS_PACKAGE && \
+    rpm -V  $INSTALL_PKGS $JENKINS_PACKAGE && \
+    yum clean all && \
     localedef -f UTF-8 -i en_US en_US.UTF-8
 
 COPY ./contrib/openshift /opt/openshift
