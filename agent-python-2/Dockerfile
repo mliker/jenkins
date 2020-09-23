@@ -1,5 +1,8 @@
 FROM quay.io/openshift/origin-jenkins-agent-base:v4.0
 
+ENV LANG en_US.utf8
+ENV LC_ALL en_US.utf8
+
 COPY contrib/bin/configure-agent /usr/local/bin/configure-agent
 
 # CentOS repositories
