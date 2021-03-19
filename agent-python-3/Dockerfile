@@ -11,7 +11,8 @@ COPY contrib/openshift/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
 RUN INSTALL_PKGS="python3-pip" && \
     yum install -y --setopt=tsflags=nodocs --disableplugin=subscription-manager $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    yum clean all -y --disableplugin=subscription-manager
+    yum clean all -y --disableplugin=subscription-manager && \
+    python3 -m pip install -U pip
 
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
