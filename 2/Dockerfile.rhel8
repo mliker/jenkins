@@ -1,16 +1,16 @@
 ##############################################
 # Stage 1 : Build go-init
 ##############################################
-FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-golang-openshift-4.6 AS go-init-builder
+FROM registry.ci.openshift.org/ocp/builder:rhel-8-golang-1.16-openshift-4.8 AS go-init-builder
 WORKDIR  /go/src/github.com/openshift/jenkins
 COPY . .
 WORKDIR  /go/src/github.com/openshift/jenkins/go-init
-RUN go build . && cp go-init /usr/bin
+RUN GO111MODULE=off go build . && cp go-init /usr/bin
 
 ##############################################
 # Stage 2 : Build slave-base with go-init
 ##############################################
-FROM registry.svc.ci.openshift.org/ocp/4.6:cli
+FROM registry.ci.openshift.org/ocp/4.8:cli
 MAINTAINER OpenShift Developer Services <openshift-dev-services+jenkins@redhat.com>
 COPY --from=go-init-builder /usr/bin/go-init /usr/bin/go-init
 
@@ -30,7 +30,7 @@ ENV JENKINS_VERSION=2 \
     HOME=/var/lib/jenkins \
     JENKINS_HOME=/var/lib/jenkins \
     JENKINS_UC=https://updates.jenkins.io \
-    OPENSHIFT_JENKINS_IMAGE_VERSION=4.6 \
+    OPENSHIFT_JENKINS_IMAGE_VERSION=4.7 \
     LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     INSTALL_JENKINS_VIA_RPMS=false
@@ -43,7 +43,7 @@ LABEL io.k8s.description="Jenkins is a continuous integration server" \
       io.k8s.display-name="Jenkins 2" \
       io.openshift.tags="jenkins,jenkins2,ci" \
       io.openshift.expose-services="8080:http" \
-      io.jenkins.version="2.235.5" \
+      io.jenkins.version="2.277.3" \
       io.openshift.s2i.scripts-url=image:///usr/libexec/s2i 
 
 # Labels consumed by Red Hat build service
